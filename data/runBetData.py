@@ -23,11 +23,9 @@ class RunBetData:
 
 
     ####------下面为输出函数--------####
-
     def get_buy_price(self):
         data_json = self._get_json_data()
         return data_json["runBet"]["next_buy_price"]
-
 
     def get_sell_price(self):
         data_json = self._get_json_data()
@@ -37,7 +35,7 @@ class RunBetData:
         data_json = self._get_json_data()
         return data_json["config"]["cointype"]
 
-    def get_quantity(self,exchange_method=True):
+    def get_quantity(self, exchange_method=True):
         '''
         :param exchange: True 代表买入，取买入的仓位 False：代表卖出，取卖出应该的仓位
         :return:

@@ -10,11 +10,8 @@ runbet = RunBetData()
 msg = Message()
 
 class Run_Main():
-
     def __init__(self):
         self.coinType = runbet.get_cointype()  # 交易币种
-        pass
-
 
     def loop_run(self):
         while True:
@@ -46,15 +43,15 @@ class Run_Main():
                 print("当前市价：{market_price}。未能满足交易,继续运行".format(market_price = cur_market_price))
 
 
-if __name__ == "__main__":
-    instance = Run_Main()
-    try:
-        instance.loop_run()
-    except Exception as e:
-        error_info = "报警：币种{coin},服务停止.错误原因{info}".format(coin=instance.coinType,info=str(e))
-        msg.dingding_warn(error_info)
+# if __name__ == "__main__":
+#     instance = Run_Main()
+#     try:
+#         instance.loop_run()
+#     except Exception as e:
+#         error_info = "报警：币种{coin},服务停止.错误原因{info}".format(coin=instance.coinType,info=str(e))
+#         msg.dingding_warn(error_info)
 
 # 调试看报错运行下面，正式运行用上面       
-# if __name__ == "__main__":       
-    # instance = Run_Main()    
-    # instance.loop_run()
+if __name__ == "__main__":       
+    instance = Run_Main()    
+    instance.loop_run()

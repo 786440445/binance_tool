@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*
+import os, sys
+home_dir = os.getcwd()
+
+if home_dir not in sys.path:
+    sys.path.append(home_dir)
+    
 import requests, time, hmac, hashlib
 from app.authorization import recv_window,api_secret,api_key
 
@@ -21,17 +27,17 @@ class BinanceAPI(object):
         path = "%s/ping" % self.BASE_URL_V3
         return requests.get(path, timeout=180, verify=True).json()
 
-    def get_ticker_price(self,market):
+    def get_ticker_price(self, market):
         path = "%s/ticker/price" % self.BASE_URL_V3
-        params = {"symbol":market}
+        params = {"symbol": market}
         res =  self._get_no_sign(path,params)
         time.sleep(2)
         return float(res['price'])
 
-    def get_ticker_24hour(self,market):
+    def get_ticker_24hour(self, market):
         path = "%s/ticker/24hr" % self.BASE_URL_V3
-        params = {"symbol":market}
-        res =  self._get_no_sign(path,params)
+        params = {"symbol": market}
+        res =  self._get_no_sign(path, params)
         return res
 
     def get_klines(self, market, interval, startTime=None, endTime=None):
@@ -106,7 +112,7 @@ class BinanceAPI(object):
         return "{:.8f}".format(price)
 
 if __name__ == "__main__":
-    instance = BinanceAPI(api_key,api_secret)
+    instance = BinanceAPI(api_key, api_secret)
     # print(instance.buy_limit("EOSUSDT",5,2))
     # print(instance.get_ticker_price("WINGUSDT"))
-    print(instance.get_ticker_24hour("WINGUSDT"))
+    print(instance.get_ticker_24hour("BTHUSDT"))
