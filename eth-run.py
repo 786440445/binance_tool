@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from app.BinanceAPI import BinanceAPI
+from app.BinanceAPI import BinanceAPI, CoinExchange
 from app.authorization import api_key,api_secret
 from data.runBetData import RunBetData
 from app.dingding import Message
@@ -7,7 +7,7 @@ import time
 
 binan = BinanceAPI(api_key,api_secret)
 runbet = RunBetData()
-msg = Message()
+change = CoinExchange()
 
 class Run_Main():
     def __init__(self):
@@ -22,7 +22,7 @@ class Run_Main():
             step = runbet.get_step() # 当前步数
 
             if grid_buy_price >= cur_market_price:   # 是否满足买入价
-                res = msg.buy_limit_msg(self.coinType, quantity, grid_buy_price)
+                res = change.buy_limit_msg(self.coinType, quantity, grid_buy_price)
                 if res['orderId']: # 挂单成功
                     runbet.modify_price(grid_buy_price, step+1) #修改data.json中价格、当前步数
                     time.sleep(60*2) # 挂单后，停止运行1分钟
@@ -33,7 +33,7 @@ class Run_Main():
                 if step==0: # setp=0 防止踏空，跟随价格上涨
                     runbet.modify_price(grid_sell_price,step)
                 else:
-                    res = msg.sell_limit_msg(self.coinType, runbet.get_quantity(False), grid_sell_price)
+                    res = change.sell_limit_msg(self.coinType, runbet.get_quantity(False), grid_sell_price)
                     if res['orderId']:
                         runbet.modify_price(grid_sell_price, step - 1)
                         time.sleep(60*2)  # 挂单后，停止运行1分钟
@@ -52,6 +52,6 @@ class Run_Main():
 #         msg.dingding_warn(error_info)
 
 # 调试看报错运行下面，正式运行用上面       
-if __name__ == "__main__":       
-    instance = Run_Main()    
+if __name__ == "__main__":
+    instance = Run_Main()
     instance.loop_run()

@@ -7,6 +7,7 @@ if home_dir not in sys.path:
     
 import requests, time, hmac, hashlib
 from app.authorization import recv_window,api_secret,api_key
+from app.dingding import Message
 
 try:
     from urllib import urlencode
@@ -110,6 +111,42 @@ class BinanceAPI(object):
 
     def _format(self, price):
         return "{:.8f}".format(price)
+
+
+class CoinExchange():
+    def __init__(self) -> None:
+        self.api = BinanceAPI(api_key, api_secret)
+
+    def buy_limit_msg(self, market, quantity, rate):
+        try:
+            res = self.api.buy_limit(market, quantity, rate)
+            if res['orderId']:
+                buy_info = "报警：币种为：{cointype}。买单价为：{price}。买单量为：{num}".format(cointype=market,price=rate,num=quantity)
+                Message.dingding_warn(buy_info)
+                return res
+        except BaseException as e:
+            error_info = "报警：币种为：{cointype},买单失败.api返回内容为:{reject}".format(cointype=market,reject=res['msg'])
+            Message.dingding_warn(error_info)
+
+
+    def sell_limit_msg(self,market, quantity, rate):
+        '''
+        :param market:
+        :param quantity: 数量
+        :param rate: 价格
+        :return:
+        '''
+        try:
+            res = self.api.sell_limit(market, quantity, rate)
+            if res['orderId']:
+                buy_info = "报警：币种为：{cointype}。卖单价为：{price}。卖单量为：{num}".format(cointype=market,price=rate,num=quantity)
+                Message.dingding_warn(buy_info)
+                return res
+        except BaseException as e:
+            error_info = "报警：币种为：{cointype},卖单失败.api返回内容为:{reject}".format(cointype=market,reject=res['msg'])
+            Message.dingding_warn(error_info+str(res))
+            return res
+
 
 if __name__ == "__main__":
     instance = BinanceAPI(api_key, api_secret)
